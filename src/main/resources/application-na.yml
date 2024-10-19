@@ -1,0 +1,60 @@
+aws.region: us-east-1
+aws.access-key-id: ${AWS_ACCESS_KEY_ID}
+aws.secret-access-key: ${AWS_SECRET_ACCESS_KEY}
+
+aws.corpora-bucket: open-dictation-na
+aws.transactions-bucket: open-dictation-transactions-na
+
+corpora:
+  -
+    name: romtts.ro.tsv.txt
+    language: romanian
+    bucket: romaniantts-na
+  -
+    name: common-voice-validated.ro.tsv.txt
+    language: romanian
+    bucket: common-voice-romanian-na
+  -
+    name: common-voice-validated.ar.tsv.txt
+    language: arabic
+    bucket: common-voice-arabic-na
+  -
+    name: common-voice-validated.cz.tsv.txt
+    language: czech
+    bucket: common-voice-czech-na
+  -
+    name: common-voice-validated.de.tsv.txt
+    language: german
+    bucket: common-voice-german-na
+  -
+    name: common-voice-validated.en.tsv.txt
+    language: english
+    bucket: common-voice-english-na
+  -
+    name: common-voice-validated-3.es.tsv.txt
+    language: spanish
+    bucket: common-voice-spanish-na
+  -
+    name: common-voice-validated.fa.tsv.txt
+    language: farsi
+    bucket: common-voice-farsi-na
+  -
+    name: common-voice-validated.fr.tsv.txt
+    language: french
+    bucket: common-voice-french-na
+  -
+    name: common-voice-validated.it.tsv.txt
+    language: italian
+    bucket: common-voice-italian-na
+  -
+    name: common-voice-validated.jp.tsv.txt
+    language: japanese
+    bucket: common-voice-japanese-na
+  -
+    name: common-voice-validated.kr.tsv.txt
+    language: korean
+    bucket: common-voice-korean-na
+  -
+    name: common-voice-validated.ru.tsv.txt
+    language: russian
+    bucket: common-voice-russian-na

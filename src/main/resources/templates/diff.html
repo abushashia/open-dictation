@@ -1,0 +1,124 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>open-dictation</title>
+    <style>
+        table, th, td {
+          border: 1px solid black;
+          border-collapse: collapse;
+        }
+    </style>
+</head>
+<body onkeydown="handleKeyDown(event)">
+<center>
+    <p>
+        <audio id="theAudio" controls autoplay controlsList="nodownload" onloadeddata="(function(el){ el.volume=0.12; }) (this)">
+            <source th:src="${audioHeaderAndPayload}">
+        </audio>
+    </p>
+    <div th:if="${prettyHtmlDiff != null}">
+        <table>
+            <tr>
+                <td>Diff</td>
+                <td th:utext="${prettyHtmlDiff}"></td>
+            </tr>
+            <tr>
+                <td>Theirs</td>
+                <td th:text="${transcript}"></td>
+            </tr>
+            <tr>
+                <td>Yours</td>
+                <td th:text="${userTranscript}"></td>
+            </tr>
+        </table>
+    </div>
+    <form action="#" th:action="@{/dictation/acknowledge}" method="post" name="formId" id="formId">
+        <input type="hidden" th:each="kvp : ${primaryAttributes}" th:value="${kvp.value}" th:name="${kvp.key}" th:if="${kvp.value != null}">
+        <input type="hidden" th:value="${timeMillis}" th:name="timeMillis">
+        <p>
+            <button type="button"><a th:href="@{/}">Home</a></button>
+            <button th:if="${translation != null}" type="button" onclick="toggleTranslation()">Translate</button>
+<!--            <input type="submit" value="Next" onclick="onSubmitEtc()">-->
+            <button type="button" onclick="onSubmitEtc()">Next</button>
+        </p>
+        <div th:if="${prettyHtmlDiff != null}">
+            <label for="correct">Correct</label>
+            <input type="checkbox" id="correct" name="correct">
+        </div>
+        <div th:if="${!isReserved}">
+            <label for="reserve">Reserve</label>
+            <input type="checkbox" id="reserve" name="reserve">
+        </div>
+    </form>
+    <div th:if="${translation != null}"
+         th:style="${(showTranslation == null) || !showTranslation} ? 'display: none;' : 'display: block;'"
+         id="translation">
+        <table>
+            <tr>
+                <td th:text="${transcript}"></td>
+            </tr>
+            <tr>
+                <td th:text="${translation}"></td>
+            </tr>
+        </table>
+    </div>
+    <p th:if="${imageLink != null}">
+        <img th:src="${imageLink}" alt="DALLE" width="256" height="256">
+    </p>
+</center>
+<script>
+function handleKeyDown(event) {
+    var char = event.which;
+    if (char == 27) {
+        // 27 is the esc (escape) key
+        var theAudio = document.getElementById("theAudio");
+        if (theAudio.paused === true) {
+            theAudio.play();
+        } else {
+            theAudio.pause();
+        }
+    } else if (char == 39) {
+        // right arrow
+        onSubmitEtc();
+    } else if (event.ctrlKey && char == 13) {
+        onSubmitEtc();
+    } else if (char == 13) {
+        onSubmitEtc();
+    }
+};
+function toggleTranslation() {
+    toggleElement("translation");
+};
+function toggleElement(elementId) {
+    var element = document.getElementById(elementId);
+    if (element.style.display === "none") {
+        element.style.display = "block";
+    } else {
+        element.style.display = "none";
+    }
+};
+function onSubmitEtc() {
+    var correctElement = document.getElementById("correct");
+    if ((correctElement !== null) && correctElement.checked) {
+        var confirmed = confirm("Are you sure you want to mark this transaction as correct?");
+        console.log("Force correction confirmed? " + confirmed);
+        if (!confirmed) {
+            correctElement.checked = false;
+            return;
+        }
+    }
+
+    var reserveElement = document.getElementById("reserve");
+    if ((reserveElement !== null) && reserveElement.checked) {
+        var confirmed = confirm("Are you sure you want to reserve this position?");
+        console.log("Reservation confirmed? " + confirmed);
+        if (!confirmed) {
+            reserveElement.checked = false;
+            return;
+        }
+    }
+
+    document.getElementById("formId").submit();
+}
+</script>
+</body>
+</html>

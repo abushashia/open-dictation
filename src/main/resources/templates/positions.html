@@ -1,0 +1,187 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>open-dictation</title>
+    <style>
+        table, th, td {
+          border: 1px solid black;
+          border-collapse: collapse;
+        }
+    </style>
+</head>
+<body>
+<center>
+    <p>
+        <button type="button"><a th:href="@{/}">Home</a></button>
+        <button type="button">
+            <a th:href="'/performance?language=' + ${language} ">Performance</a>
+        </button>
+        <button type="button">
+            <a th:href="'/sessions?language=' + ${language} ">Sessions</a>
+        </button>
+        <button type="button">
+            <a th:href="'/dictation?language=' + ${language} ">Play</a>
+        </button>
+    </p>
+    <p>
+        <button type="button">
+            <a th:href="'/positions/words?language=' + ${language} ">Words</a>
+        </button>
+        <button type="button">
+            <a th:href="'/positions/reservations?language=' + ${language} ">Reservations</a>
+        </button>
+        <button type="button">
+            <a th:href="'/positions/position?language=' + ${language} ">Search</a>
+        </button>
+    </p>
+    <table>
+        <thead>
+            <th>Sentences</th>
+            <th>Positions</th>
+            <th>UniTrans</th>
+            <th>Unknown</th>
+            <th>Coverage</th>
+            <th>r4r</th>
+            <th>+4</th>
+            <th>+4%</th>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span th:text="${languageSummary.sentencesCount}">15000</span></td>
+                <td><span th:text="${languageSummary.positionsCount}">10000</span></td>
+                <td><span th:text="${languageSummary.uniqueTranscriptsCount}">10000</span></td>
+                <td><span th:text="${languageSummary.unknownCount}">5000</span></td>
+                <td><span th:text="${#numbers.formatPercent(languageSummary.percentComplete, 1, 2)}">%25</span></td>
+                <td><span th:text="${languageSummary.r4rCount}">4000</span></td>
+                <td><span th:text="${languageSummary.plus4OrMoreCount}">1000</span></td>
+                <td><span th:text="${#numbers.formatPercent(languageSummary.getPercentPlus4OrMore, 1, 2)}">%25</span></td>
+            </tr>
+        </tbody>
+    </table>
+    <br>
+    <div th:if="${prefix != null}">
+    <table>
+        <thead>
+        <th>Prefix</th>
+        <th>Pos</th>
+        <th>r4r</th>
+        <th>+4</th>
+        </thead>
+        <tbody>
+        <tr>
+            <td><span th:text="${prefix}">15000</span></td>
+            <td><span th:text="${prefixPositionsCount}">10000</span></td>
+            <td><span th:text="${prefixR4rCount}">4000</span></td>
+            <td><span th:text="${prefixPlus4Count}">4000</span></td>
+        </tr>
+        </tbody>
+    </table>
+    <br>
+    </div>
+    <div th:if="${corpusDetails != null}">
+        <table>
+            <caption>Corpus Details</caption>
+            <thead>
+            <th>Corpus</th>
+            <th>Sentences</th>
+            <th>Positions</th>
+            <th>Unknown</th>
+            <th>Coverage</th>
+            <th>r4r</th>
+            <th>+4</th>
+            <th>+4%</th>
+            </thead>
+            <tbody>
+            <tr th:each="corpusDetail : ${corpusDetails}">
+                <td>
+                    <a th:href="'/dictation?language=' + ${corpusDetail.language} + '&corpus=' + ${corpusDetail.corpus}" th:text="${corpusDetail.corpus}"></a>
+                </td>
+                <td><span th:text="${corpusDetail.sentencesCount}">15000</span></td>
+                <td><span th:text="${corpusDetail.positionsCount}">10000</span></td>
+                <td><span th:text="${corpusDetail.unknownCount}">5000</span></td>
+                <td><span th:text="${#numbers.formatPercent(corpusDetail.percentComplete, 1, 2)}">%25</span></td>
+                <td><span th:text="${corpusDetail.r4rCount}">4000</span></td>
+                <td><span th:text="${corpusDetail.plus4OrMoreCount}">5000</span></td>
+                <td><span th:text="${#numbers.formatPercent(corpusDetail.percentPlus4OrMore, 1, 2)}">%15</span></td>
+            </tr>
+            </tbody>
+        </table>
+        <br>
+    </div>
+    <table>
+        <caption>Streaks</caption>
+        <thead>
+            <tr>
+                <th th:each="bucket : ${streakBuckets}"><span th:text="${bucket.key}">Streak</span></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td th:each="bucket : ${streakBuckets}"><span th:text="${bucket.value}">Count</span></td>
+            </tr>
+        </tbody>
+    </table>
+    <br>
+    <table>
+        <caption>Streaks r4r</caption>
+        <thead>
+        <tr>
+            <th th:each="bucket : ${streakBucketsR4r}"><span th:text="${bucket.key}">Streak</span></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td th:each="bucket : ${streakBucketsR4r}"><span th:text="${bucket.value}">Count</span></td>
+        </tr>
+        </tbody>
+    </table>
+    <br>
+    <table>
+        <caption>Conditional Success Rates</caption>
+        <thead>
+            <th>Streak</th>
+            <th>Successes</th>
+            <th>Txns</th>
+            <th>Rate</th>
+        </thead>
+        <tbody>
+            <tr th:each="data : ${conditionalSuccessRateDatas}">
+                <td><span th:text="${data.streak}"></span></td>
+                <td><span th:text="${data.successesCount}">1000</span></td>
+                <td><span th:text="${data.transactionsCount}">4000</span></td>
+                <td><span th:text="${#numbers.formatPercent(data.successRate, 1, 2)}">%25</span></td>
+            </tr>
+        </tbody>
+    </table>
+    <br>
+    <table>
+        <caption>Num Txns Histogram</caption>
+        <thead>
+        <th>Txns</th>
+        <th>Pos</th>
+        <th>Percent</th>
+        <th>Percentile</th>
+        </thead>
+        <tbody>
+        <tr th:each="detail : ${numTxnsHistogramDetails}">
+            <td><span th:text="${detail.numTxns}"></span></td>
+            <td><span th:text="${detail.numPos}"></span></td>
+            <td><span th:text="${#numbers.formatPercent(detail.percent, 1, 2)}">%25</span></td>
+            <td><span th:text="${#numbers.formatPercent(detail.percentile, 1, 2)}">%25</span></td>
+        </tr>
+        </tbody>
+    </table>
+    <br>
+    <table>
+        <caption>Worst Positions</caption>
+        <thead>
+        <th>File Name</th>
+        </thead>
+        <tbody>
+        <tr th:each="fileName : ${fileNamesOfWorstPositions}">
+            <td><span th:text="${fileName}"></span></td>
+        </tr>
+        </tbody>
+    </table>
+</center>
+</body>
+</html>

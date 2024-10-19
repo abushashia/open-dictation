@@ -1,0 +1,8 @@
+server.port: 8081
+
+spring.jackson.serialization.indent_output: true
+
+aws.transactions-bucket: open-dictation-transactions-dev-na
+
+dictation.import-sentences-slice: true
+dictation.session-duration: PT2M

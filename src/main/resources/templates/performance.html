@@ -1,0 +1,69 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>open-dictation</title>
+    <style>
+        table, th, td {
+          border: 1px solid black;
+          border-collapse: collapse;
+        }
+    </style>
+</head>
+<body>
+<center>
+    <p>
+        <button type="button"><a th:href="@{/}">Home</a></button>
+        <button type="button">
+            <a th:href="'/positions?language=' + ${language} ">Positions</a>
+        </button>
+        <button type="button">
+            <a th:href="'/sessions?language=' + ${language} ">Sessions</a>
+        </button>
+        <button type="button">
+            <a th:href="'/dictation?language=' + ${language} ">Play</a>
+        </button>
+    </p>
+    <table>
+        <thead>
+            <th>Month</th>
+            <th>Txns</th>
+            <th>Pos</th>
+            <th>NewPos</th>
+            <th>NewTran</th>
+            <th>Success</th>
+            <th>SuccessNew</th>
+            <th>SuccNewTran</th>
+            <th>AvgLev</th>
+            <th>AvgLevNew</th>
+            <th>+4+</th>
+            <th>Sess</th>
+            <th>Sess/Day</th>
+            <th>Txns/Sess</th>
+            <th>CumTxns</th>
+            <th>CumPos</th>
+        </thead>
+        <tbody>
+            <tr th:each="perfData : ${perfDatas}">
+                <td>
+                    <a th:href="'/performance?language=' + ${language} + '&yearMonth=' + ${perfData.yearMonth} " th:text="${perfData.yearMonth}"></a>
+                </td>
+                <td><span th:text="${perfData.transactionsCount}">4000</span></td>
+                <td><span th:text="${perfData.positionsCount}">2000</span></td>
+                <td><span th:text="${perfData.newPositionsCount}">1000</span></td>
+                <td><span th:text="${perfData.newTranscriptsCount}">900</span></td>
+                <td><span th:text="${#numbers.formatPercent(perfData.successRate, 1, 2)}">%72</span></td>
+                <td><span th:text="${#numbers.formatPercent(perfData.successRateNew, 1, 2)}">%42</span></td>
+                <td><span th:text="${#numbers.formatPercent(perfData.successRateNewTranscript, 1, 2)}">%32</span></td>
+                <td><span th:text="${#numbers.formatDecimal(perfData.avgLevDist, 1, 4)}">2.1</span></td>
+                <td><span th:text="${#numbers.formatDecimal(perfData.avgLevDistNew, 1, 4)}">3.4</span></td>
+                <td><span th:text="${perfData.plus4Count}">33</span></td>
+                <td><span th:text="${perfData.sessionsCount}">120</span></td>
+                <td><span th:text="${#numbers.formatDecimal(perfData.sessionsPerDay, 1, 2)}">3.9</span></td>
+                <td><span th:text="${#numbers.formatDecimal(perfData.transactionsPerSession, 1, 2)}">50.3</span></td>
+                <td><span th:text="${perfData.cumTransactionsCount}">90000</span></td>
+                <td><span th:text="${perfData.cumPositionsCount}">20000</span></td>
+            </tr>
+        </tbody>
+    </table>
+</center>
+</body>
+</html>

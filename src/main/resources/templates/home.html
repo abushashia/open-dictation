@@ -1,0 +1,53 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>open-dictation</title>
+</head>
+<body>
+<!--<table align="right">-->
+<!--    <tbody>-->
+<!--    <tr>-->
+<!--        <td th:text="${userName}"></td>-->
+<!--    </tr>-->
+<!--    <tr>-->
+<!--        <td th:text="${prefix}"></td>-->
+<!--    </tr>-->
+<!--    </tbody>-->
+<!--</table>-->
+<!--<br/>-->
+<br/>
+<center>
+    <table>
+        <thead>
+            <tr>
+                <th>Language</th>
+                <th>Sentences</th>
+                <th>Positions</th>
+                <th>Transactions</th>
+                <th>Sessions</th>
+                <th>Success</th>
+                <th th:if="${userAudioEnabled}">UserAudio</th>
+            </tr>
+        </thead>
+        <tbody>
+        <tr th:each="userLanguageData : ${userLanguageDataList}">
+            <td>
+                <a th:href="'/dictation?language=' + ${userLanguageData.language} " th:text="${userLanguageData.languageDisplayName}"></a>
+            </td>
+            <td th:text="${userLanguageData.sentences}">500</td>
+            <td>
+                <a th:href="'/positions?language=' + ${userLanguageData.language} " th:text="${userLanguageData.positions}"></a>
+            </td>
+            <td th:text="${userLanguageData.transactions}">200</td>
+            <td>
+                <a th:href="'/sessions?language=' + ${userLanguageData.language} " th:text="${userLanguageData.sessions}"></a>
+            </td>
+            <td>
+                <a th:href="'/performance?language=' + ${userLanguageData.language} " th:text="${#numbers.formatPercent(userLanguageData.success, 1, 2)}"></a>
+            </td>
+            <td th:if="${userAudioEnabled}" th:text="${userLanguageData.userAudioFiles}">45</td>
+        </tr>
+        </tbody>
+    </table>
+</center>
+</body>
+</html>

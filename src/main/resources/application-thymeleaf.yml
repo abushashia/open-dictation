@@ -1,0 +1,4 @@
+spring.resources.static-locations: file:./src/main/resources/static/
+spring.thymeleaf.cache: false
+spring.thymeleaf.check-template-location: true
+spring.thymeleaf.prefix: file:src/main/resources/templates/

@@ -1,0 +1,41 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>open-dictation</title>
+    <style>
+        table, th, td {
+          border: 1px solid black;
+          border-collapse: collapse;
+        }
+    </style>
+</head>
+<body>
+<center>
+    <p>
+        <button type="button"><a th:href="@{/}">Home</a></button>
+    </p>
+    <form action="#" th:action="@{/settings}" method="post">
+        <table>
+            <tr>
+                <td>
+                    <label for="fiatPercent">Fiat Percent (between 5 and 50)</label>
+                </td>
+                <td>
+                    <input type="text" th:value="${fiatPercent}" id="fiatPercent" name="fiatPercent">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="sessionDuration">Session Duration (Minutes)</label>
+                </td>
+                <td>
+                    <input type="text" th:value="${sessionDuration}" id="sessionDuration" name="sessionDuration">
+                </td>
+            </tr>
+        </table>
+        <p>
+            <button type="submit">Submit</button>
+        </p>
+    </form>
+</center>
+</body>
+</html>

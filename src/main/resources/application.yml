@@ -1,0 +1,30 @@
+server.error.include-stacktrace: always
+
+server.port: 5000
+
+# open-dictation HTTPS
+dictation.oauth2-enabled: true
+spring.security.oauth2.client.registration.google.clientId: ${OAUTH_GOOGLE_CLIENT_ID_PROD}
+spring.security.oauth2.client.registration.google.clientSecret: ${OAUTH_GOOGLE_CLIENT_SECRET_PROD}
+
+spring.jackson.default-property-inclusion: non_null
+
+management.endpoints.web.exposure.include: health,info,metrics,prometheus
+
+# fiat or rate of release (of new coins)
+dictation.fiat-percent: 10
+dictation.import-sentences-slice: false
+dictation.session-duration: PT25M
+#dictation.session-duration: PT10M
+dictation.translation-enabled: true
+dictation.repeat-enabled: false
+dictation.user-audio-enabled: false
+dictation.admin-user-name: ${DICTATION_ADMIN_USER_NAME}
+dictation.settings-enabled: false
+
+logging.level:
+  com.zaxxer: ERROR
+
+dictation.image-generation-enabled: false
+spring.ai.openai.api-key: ${OPENAI_API_KEY}
+spring.ai.openai.chat.options.model: gpt-4o

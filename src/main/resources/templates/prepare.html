@@ -1,0 +1,203 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>open-dictation</title>
+</head>
+<body onkeydown="handleKeyDown(event)">
+<center>
+    <p>
+        <audio id="theAudio" controls autoplay controlsList="nodownload" onloadeddata="(function(el){ el.volume=0.12; }) (this)">
+            <source th:src="${audioHeaderAndPayload}">
+        </audio>
+    </p>
+    <p th:if="${userAudioEnabled}">
+        <button id="record">Record</button>
+        <button id="stop" disabled>Stop</button>
+        <button id="play" disabled>Play</button>
+        <button id="save" disabled style="display: none;">Save</button>
+    </p>
+    <form action="#" th:action="@{/dictation}" method="post" id="formId">
+        <input type="hidden" th:each="kvp : ${primaryAttributes}" th:value="${kvp.value}" th:name="${kvp.key}" th:if="${kvp.value != null}">
+        <p><textarea form="formId" id="userTranscript" name="userTranscript"
+                     autocapitalize="off" autocomplete="off" autocorrect="off" spellcheck="false" autofocus
+                     style="width: 500px; height: 100px;"
+                     th:styleappend="${rtl} ? 'direction: rtl' : 'direction: ltr'"
+        ></textarea></p>
+        <p>
+            <button type="button"><a th:href="@{/}">Home</a></button>
+<!--            <button type="submit">Submit</button>-->
+            <button type="button" onclick="onSubmitEtc()">Submit</button>
+        </p>
+        <div>
+            <label for="translate">Translate</label>
+            <input type="checkbox" id="translate" name="translate">
+        </div>
+        <div>
+            <label for="reserve">Reserve</label>
+            <input type="checkbox" id="reserve" name="reserve">
+        </div>
+        <div th:if="${imageGenerationEnabled}">
+            <label for="draw">DALLE</label>
+            <input type="checkbox" id="draw" name="draw">
+        </div>
+    </form>
+    <div th:if="${userAudioEnabled}" style="display: block;" id="saved-audio-messages">
+    </div>
+</center>
+<!-- TODO if a click is between two words, add a space after the cursor -->
+<script>
+function handleKeyDown(event) {
+    var char = event.which;
+    if (char == 27) {
+        // 27 is the esc (escape) key
+        var theAudio = document.getElementById("theAudio");
+        if (theAudio.paused === true) {
+            theAudio.play();
+        } else {
+            theAudio.pause();
+        }
+    } else if (event.ctrlKey && char == 13) {
+        onSubmitEtc();
+    }
+};
+function onSubmitEtc() {
+    saveUserAudio();
+    // TODO also grab the adjusted volume for diff view
+
+    var reserveElement = document.getElementById("reserve");
+    if (reserveElement.checked) {
+        var confirmed = confirm("Are you sure you want to reserve this position?");
+        if (!confirmed) {
+            reserveElement.checked = false;
+            return;
+        }
+    }
+
+    var userTranscript = document.getElementById("userTranscript").value.trim();
+    if (userTranscript == '') {
+        var confirmed = confirm("Are you sure you want to submit a blank transcript?");
+        if (!confirmed) {
+            return;
+        }
+    }
+
+    // TODO add setting to let user require confirmation of every submission
+    document.getElementById("formId").submit();
+};
+function saveUserAudio() {
+    var userAudioSaveButton = document.getElementById("save");
+    if (userAudioSaveButton) {
+        userAudioSaveButton.click();
+    }
+};
+</script>
+<!-- BEGIN bryan jenning's audio recording -->
+<script th:if="${userAudioEnabled}">
+const recordAudio = () =>
+    new Promise(async resolve => {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        const mediaRecorder = new MediaRecorder(stream);
+        let audioChunks = [];
+
+        mediaRecorder.addEventListener('dataavailable', event => {
+            audioChunks.push(event.data);
+        });
+
+        const start = () => {
+            audioChunks = [];
+            mediaRecorder.start();
+        };
+
+        const stop = () =>
+            new Promise(resolve => {
+                mediaRecorder.addEventListener('stop', () => {
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/mpeg' });
+                    const audioUrl = URL.createObjectURL(audioBlob);
+                    const audio = new Audio(audioUrl);
+                    const play = () => audio.play();
+                    resolve({ audioChunks, audioBlob, audioUrl, play });
+                });
+
+                mediaRecorder.stop();
+            });
+
+        resolve({ start, stop });
+    });
+
+    const sleep = time => new Promise(resolve => setTimeout(resolve, time));
+
+    const recordButton = document.querySelector('#record');
+    const stopButton = document.querySelector('#stop');
+    const playButton = document.querySelector('#play');
+    const saveButton = document.querySelector('#save');
+    const savedAudioMessagesContainer = document.querySelector('#saved-audio-messages');
+
+    let recorder;
+    let audio;
+
+    recordButton.addEventListener('click', async () => {
+        recordButton.setAttribute('disabled', true);
+        stopButton.removeAttribute('disabled');
+        playButton.setAttribute('disabled', true);
+        saveButton.setAttribute('disabled', true);
+        if (!recorder) {
+            recorder = await recordAudio();
+        }
+        recorder.start();
+    });
+
+    stopButton.addEventListener('click', async () => {
+        recordButton.removeAttribute('disabled');
+        stopButton.setAttribute('disabled', true);
+        playButton.removeAttribute('disabled');
+        saveButton.removeAttribute('disabled');
+        audio = await recorder.stop();
+    });
+
+    playButton.addEventListener('click', () => {
+        audio.play();
+    });
+
+    saveButton.addEventListener('click', () => {
+        const originalFileNameValue = document.getElementById('fileName').value;
+        const reader = new FileReader();
+        reader.readAsDataURL(audio.audioBlob);
+        reader.onload = () => {
+            const base64AudioMessage = reader.result.split(',')[1];
+            fetch('/useraudio', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ originalFileName: originalFileNameValue, userAudioPayload : base64AudioMessage})
+            }).then(res => {
+                if (res.status === 201) {
+                    // return populateAudioMessages();
+                }
+                // console.log('Invalid status saving audio message: ' + res.status);
+            });
+        };
+    });
+
+    const populateAudioMessages = () => {
+        const originalFileNameValue = document.getElementById('fileName').value;
+        const urlSearchParams = new URLSearchParams({ originalFileName: originalFileNameValue });
+        return fetch('/useraudio?' + urlSearchParams).then(res => {
+            if (res.status === 200) {
+                return res.json().then(json => {
+                    savedAudioMessagesContainer.replaceChildren();
+                    json.payloads.forEach(userAudioHeaderAndPayload => {
+                        const audioElement = document.createElement('audio');
+                        audioElement.src = userAudioHeaderAndPayload;
+                        audioElement.setAttribute('controls', true);
+                        paragraph = document.createElement('p');
+                        paragraph.appendChild(audioElement);
+                        savedAudioMessagesContainer.appendChild(paragraph);
+                    });
+                });
+            }
+            console.log('Invalid status getting messages: ' + res.status);
+        });
+    };
+
+    populateAudioMessages();
+</script>
+</body>
+</html>

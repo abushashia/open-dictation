@@ -1,0 +1,51 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>open-dictation</title>
+    <style>
+        table, th, td {
+          border: 1px solid black;
+          border-collapse: collapse;
+        }
+    </style>
+</head>
+<body>
+<center>
+    <p>
+        <button type="button"><a th:href="@{/}">Home</a></button>
+        <button type="button">
+            <a th:href="'/positions/words?language=' + ${language} ">Words</a>
+        </button>
+        <button type="button">
+            <a th:href="'/performance?language=' + ${language} ">Performance</a>
+        </button>
+        <button type="button">
+            <a th:href="'/sessions?language=' + ${language} ">Sessions</a>
+        </button>
+        <button type="button">
+            <a th:href="'/dictation?language=' + ${language} ">Play</a>
+        </button>
+    </p>
+    <table>
+        <caption>Reserved Positions</caption>
+        <thead>
+        <th>#</th>
+        <th>FileName</th>
+        <th>Release</th>
+        </thead>
+        <tbody>
+        <tr th:each="fileName : ${fileNames}">
+            <td><span th:text="${fileNames.size() - fileNameStat.index}">700</span></td>
+            <td><span th:text="${#strings.abbreviate(fileName,30)}" th:title="${fileName}">foo.mp3</span></td>
+            <td>
+                <form action="#" th:action="@{/positions/release}" method="post" id="formId">
+                    <input type="hidden" th:value="${language}" th:name="language">
+                    <input type="hidden" th:value="${fileName}" th:name="fileName">
+                    <button type="submit">Release</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</center>
+</body>
+</html>

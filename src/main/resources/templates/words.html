@@ -1,0 +1,72 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>open-dictation</title>
+    <style>
+        table, th, td {
+          border: 1px solid black;
+          border-collapse: collapse;
+        }
+    </style>
+</head>
+<body>
+<center>
+    <p>
+        <button type="button"><a th:href="@{/}">Home</a></button>
+        <button type="button">
+            <a th:href="'/positions?language=' + ${language} ">Positions</a>
+        </button>
+        <button type="button">
+            <a th:href="'/performance?language=' + ${language} ">Performance</a>
+        </button>
+        <button type="button">
+            <a th:href="'/sessions?language=' + ${language} ">Sessions</a>
+        </button>
+        <button type="button">
+            <a th:href="'/dictation?language=' + ${language} ">Play</a>
+        </button>
+    </p>
+    <table>
+        <thead>
+            <th>Positions</th>
+            <th>DistinctWords</th>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span th:text="${positionsCount}">5000</span></td>
+                <td><span th:text="${wordsCount}">9000</span></td>
+            </tr>
+        </tbody>
+    </table>
+    <br>
+    <table>
+        <thead>
+        <th>Month</th>
+        <th>NewWords</th>
+        <th>CumWords</th>
+        </thead>
+        <tbody>
+        <tr th:each="wordsData : ${wordsDataPerMonthDesc}">
+            <td><span th:text="${wordsData.yearMonth}"></span></td>
+            <td><span th:text="${wordsData.newWords}">2000</span></td>
+            <td><span th:text="${wordsData.cumWords}">4000</span></td>
+        </tr>
+        </tbody>
+    </table>
+    <br>
+    <table>
+        <thead>
+        <th>WordCount</th>
+        <th>WordsForCount</th>
+        <th>Example</th>
+        </thead>
+        <tbody>
+        <tr th:each="wordDataWithWitness : ${wordDatasWithWitnesses}">
+            <td><span th:text="${wordDataWithWitness.wordCount}"></span></td>
+            <td><span th:text="${wordDataWithWitness.wordsForCount}">1000</span></td>
+            <td><span th:text="${wordDataWithWitness.witness}"></span></td>
+        </tr>
+        </tbody>
+    </table>
+</center>
+</body>
+</html>

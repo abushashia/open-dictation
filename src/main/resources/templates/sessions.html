@@ -1,0 +1,55 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>open-dictation</title>
+    <style>
+        table, th, td {
+          border: 1px solid black;
+          border-collapse: collapse;
+        }
+    </style>
+</head>
+<body>
+<center>
+    <p>
+        <button type="button"><a th:href="@{/}">Home</a></button>
+        <button type="button">
+            <a th:href="'/performance?language=' + ${language} ">Performance</a>
+        </button>
+        <button type="button">
+            <a th:href="'/positions?language=' + ${language} ">Positions</a>
+        </button>
+        <button type="button">
+            <a th:href="'/dictation?language=' + ${language} ">Play</a>
+        </button>
+    </p>
+    <table>
+        <thead>
+            <th>#</th>
+            <th>Start</th>
+            <th>Txns</th>
+            <th>Pos</th>
+            <th>NewPos</th>
+            <th>Success</th>
+            <th>SucNew</th>
+<!--            <th>AvgLen</th>-->
+            <th>Replay</th>
+        </thead>
+        <tbody>
+            <tr th:each="aSession : ${sessions}">
+                <td><span th:text="${sessions.size() - aSessionStat.index}">700</span></td>
+                <td><span th:text="${#dates.format(new java.util.Date(aSession.sessionId))}">Start</span></td>
+                <td><span th:text="${aSession.transactionsCount}">40</span></td>
+                <td><span th:text="${aSession.positionsCount}">30</span></td>
+                <td><span th:text="${aSession.newPositionsCount}">3</span></td>
+                <td><span th:text="${#numbers.formatPercent(aSession.successRate, 1, 2)}">%70</span></td>
+                <td><span th:text="${#numbers.formatPercent(aSession.successRateNew, 1, 2)}">%55</span></td>
+<!--                <td><span th:text="${#numbers.formatDecimal(aSession.averageLength, 1, 2)}">20.1</span></td>-->
+                <td>
+                    <a th:href="'/dictation/replay?language=' + ${language} + '&sessionId=' + ${aSession.sessionId} " th:text="${aSession.sessionId}"></a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</center>
+</body>
+</html>

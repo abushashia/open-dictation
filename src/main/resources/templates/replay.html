@@ -1,0 +1,109 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>open-dictation</title>
+    <style>
+        table, th, td {
+          border: 1px solid black;
+          border-collapse: collapse;
+        }
+    </style>
+</head>
+<body onkeydown="handleKeyDown(event)">
+<center>
+    <p>
+        <audio controls controlsList="nodownload" id="theAudio" onloadeddata="(function(el){ el.volume=0.12; }) (this)">
+            <source th:src="${audioHeaderAndPayload}">
+        </audio>
+    </p>
+    <table>
+        <tr>
+            <td>Diff</td>
+            <td th:utext="${prettyHtmlDiff}"></td>
+        </tr>
+        <tr>
+            <td>Theirs</td>
+            <td th:text="${transcript}"></td>
+        </tr>
+        <tr>
+            <td>Yours</td>
+            <td th:text="${userTranscript}"></td>
+        </tr>
+    </table>
+    <form action="#" th:action="@{/dictation/replay}" method="get" name="formId" id="formId">
+        <input type="hidden" th:each="kvp : ${primaryAttributes}" th:value="${kvp.value}" th:name="${kvp.key}" th:if="${kvp.value != null}">
+        <p>
+            <button type="button"><a th:href="@{/}">Home</a></button>
+            <button type="button">
+                <a th:href="'/sessions?language=' + ${language} ">Sessions</a>
+            </button>
+            <button type="button" onclick="toggleTranslation()">Translate</button>
+            <input type="submit" value="Next" onclick="document.getElementById('formId').submit()">
+        </p>
+        <p>
+            <label for="errorsOnly">Errors Only</label>
+            <input type="checkbox" name="errorsOnly" id="errorsOnly" th:checked="${errorsOnly}" form="formId">
+        </p>
+        <table>
+            <tr>
+                <td>Corpus</td>
+                <td><span th:text="${corpus}">common-voice.txt</span></td>
+            </tr>
+            <tr>
+                <td>FileName</td>
+                <td><span th:text="${fileName}">hello.mp3</span></td>
+            </tr>
+            <tr>
+                <td>Correct</td>
+                <td><span th:text="${transactionCorrect}">false</span></td>
+            </tr>
+            <tr>
+                <td>Force Correct</td>
+                <td><span th:text="${transactionForceCorrect}">false</span></td>
+            </tr>
+            <tr>
+                <td>Reserved</td>
+                <td><span th:text="${transactionReserved}">false</span></td>
+            </tr>
+        </table>
+    </form>
+    <div style="display: none;" id="translation">
+        <table>
+            <tr>
+                <td th:text="${transcript}"></td>
+            </tr>
+            <tr>
+                <td th:text="${translation}"></td>
+            </tr>
+        </table>
+    </div>
+</center>
+<script>
+function handleKeyDown(event) {
+    var char = event.which;
+    if (char == 27) {
+        // 27 is the esc (escape) key
+        var theAudio = document.getElementById("theAudio");
+        if (theAudio.paused === true) {
+            theAudio.play();
+        } else {
+            theAudio.pause();
+        }
+    } else if (char == 39) {
+        // right arrow
+        document.getElementById("formId").submit();
+    }
+};
+function toggleTranslation() {
+    toggleElement("translation");
+};
+function toggleElement(elementId) {
+    var element = document.getElementById(elementId);
+    if (element.style.display === "none") {
+        element.style.display = "block";
+    } else {
+        element.style.display = "none";
+    }
+};
+</script>
+</body>
+</html>

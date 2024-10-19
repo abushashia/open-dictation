@@ -1,0 +1,71 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>open-dictation</title>
+    <style>
+        table, th, td {
+          border: 1px solid black;
+          border-collapse: collapse;
+        }
+    </style>
+</head>
+<body>
+<center>
+    <p>
+        <button type="button"><a th:href="@{/}">Home</a></button>
+        <button type="button">
+            <a th:href="'/performance?language=' + ${language} ">Performance</a>
+        </button>
+        <button type="button">
+            <a th:href="'/sessions?language=' + ${language} ">Sessions</a>
+        </button>
+        <button type="button">
+            <a th:href="'/dictation?language=' + ${language} ">Play</a>
+        </button>
+    </p>
+    <p>
+        <button type="button">
+            <a th:href="'/positions/words?language=' + ${language} ">Words</a>
+        </button>
+        <button type="button">
+            <a th:href="'/positions/reservations?language=' + ${language} ">Reservations</a>
+        </button>
+    </p>
+
+    <form action="#" th:action="@{/positions/position}" method="get" id="formId">
+        <input type="hidden" th:value="${language}" th:name="language">
+        <p><textarea form="formId" id="fileName" name="fileName"
+                     autocapitalize="off" autocomplete="off" autocorrect="off" spellcheck="false" autofocus
+                     style="width: 500px; height: 50px;"
+                     th:value="${fileName}"
+        ></textarea></p>
+        <button type="submit">Search</button>
+    </form>
+    <p th:if="${audioHeaderAndPayload != null}">
+        <audio id="theAudio" controls autoplay controlsList="nodownload" onloadeddata="(function(el){ el.volume=0.12; }) (this)">
+            <source th:src="${audioHeaderAndPayload}">
+        </audio>
+    </p>
+    <table th:if="${corpus != null}">
+        <tr>
+            <td>Corpus</td>
+            <td><span th:text="${corpus}">common-voice.txt</span></td>
+        </tr>
+        <tr>
+            <td>FileName</td>
+            <td><span th:text="${fileName}">hello.mp3</span></td>
+        </tr>
+        <tr>
+            <td>Reserved</td>
+            <td><span th:text="${reserved}">false</span></td>
+        </tr>
+        <tr th:if="${!reserved}">
+            <form action="#" th:action="@{/positions/reserve}" method="post">
+                <input type="hidden" th:value="${language}" th:name="language">
+                <input type="hidden" th:value="${fileName}" th:name="fileName">
+                <button type="submit">Reserve</button>
+            </form>
+        </tr>
+    </table>
+</center>
+</body>
+</html>

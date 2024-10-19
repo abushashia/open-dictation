@@ -1,0 +1,72 @@
+server.port: 8081
+
+spring.jackson.serialization.indent_output: true
+
+# TODO move from global to per-language settings; or allow for per-language overrides of these defaults
+dictation.fiat-percent: 25
+#dictation.plus-one-or-less-only: true
+
+dictation.import-sentences-local-directory: ${DICTATION_SENTENCES_BUCKET}
+dictation.import-transactions-local-directory: ${DICTATION_TRANSACTIONS_BUCKET}
+dictation.user-audio-local-directory: ${DICTATION_USER_AUDIO_BUCKET}
+
+# set to false, when no internet connection
+dictation.oauth2-enabled: false
+# dictation.admin-user-name: foo@bar.com
+
+# for weekly forced review (especially of whales)
+#dictation.prefix: romtts.ro
+#dictation.prefix: romtts.ro.adr_training_ivan
+#dictation.prefix: romtts.ro.adr_training_stan
+#dictation.prefix: TRADUCERI
+
+# The following is perhaps how you'd resolve this named list with environment variables.
+# Note, however, you could have subtrees by language, rather than repeating language, flatly.
+# CORPORA_0_NAME=A
+# CORPORA_0_LANGUAGE=B
+# CORPORA_0_BUCKET=B
+# CORPORA_1_NAME=NAME
+# CORPORA_1_LANGUAGE=LANGUAGE
+# CORPORA_1_BUCKET=BUCKET
+corpora:
+  -
+    name: romtts.ro.tsv.txt
+    language: romanian
+    # the bucket is where the audio files are
+    bucket: ${HOME}/Documents/Language Resources/Romanian/romaniantts.com/flat/
+  -
+    name: common-voice-validated.ro.tsv.txt
+    language: romanian
+    bucket: ${HOME}/Downloads/cv-corpus-18.0-2024-06-14/ro/clips/
+  -
+    name: common-voice-other.ro.tsv.txt
+    language: romanian
+    bucket: ${HOME}/Downloads/cv-corpus-12.0-2022-12-07/ro/clips/
+  -
+    name: raluca-athens.ro.tsv.txt
+    language: romanian
+    bucket: ${HOME}/Documents/Language Resources/Romanian/Raluca2/traduceri/
+  -
+    name: daniela.ro.tsv.txt
+    language: romanian
+    bucket: ${HOME}/Documents/Language Resources/Romanian/Daniela/clips/
+  -
+    name: documente.ro.tsv.txt
+    language: romanian
+    bucket: ${HOME}/Documents/Language Resources/Romanian/Documents_Ro/
+  -
+    name: common-voice-validated.de.tsv.txt
+    language: german
+    bucket: ${COMMON_VOICE_1_DE_BUCKET}
+  -
+    name: common-voice-validated-17-delta.de.tsv.txt
+    language: german
+    bucket: ${COMMON_VOICE_17D_DE_BUCKET}
+  -
+    name: common-voice-validated.fr.tsv.txt
+    language: french
+    bucket: ${HOME}/Downloads/cv-corpus-fr-1/clips/
+  -
+    name: common-voice-validated-3.es.tsv.txt
+    language: spanish
+    bucket: ${HOME}/Downloads/cv-corpus-3/es/clips/
