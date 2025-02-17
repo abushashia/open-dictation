@@ -44,6 +44,8 @@
             <label for="correct">Correct</label>
             <input type="checkbox" id="correct" name="correct">
         </div>
+        <!-- TODO allow unreserving a position, in case you got in wrong and want to see it one more time -->
+        <!-- If a position was EVER reserved, it should never autoplay, destroying your ears -->
         <div th:if="${!isReserved}">
             <label for="reserve">Reserve</label>
             <input type="checkbox" id="reserve" name="reserve">

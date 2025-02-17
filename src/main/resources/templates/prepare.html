@@ -23,7 +23,7 @@
                      th:styleappend="${rtl} ? 'direction: rtl' : 'direction: ltr'"
         ></textarea></p>
         <p>
-            <button type="button"><a th:href="@{/}">Home</a></button>
+            <button type="button"><a th:href="@{/}" onclick="confirmNavigation(event)">Home</a></button>
 <!--            <button type="submit">Submit</button>-->
             <button type="button" onclick="onSubmitEtc()">Submit</button>
         </p>
@@ -83,6 +83,11 @@ function onSubmitEtc() {
     // TODO add setting to let user require confirmation of every submission
     document.getElementById("formId").submit();
 };
+function confirmNavigation(event) {
+    if (!confirm("Are you sure you want to go to the Home page?")) {
+        event.preventDefault(); // Stop navigation if the user cancels
+    }
+}
 function saveUserAudio() {
     var userAudioSaveButton = document.getElementById("save");
     if (userAudioSaveButton) {

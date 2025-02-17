@@ -32,6 +32,7 @@
             <th>Success</th>
             <th>SucNew</th>
 <!--            <th>AvgLen</th>-->
+            <th>Force</th>
             <th>Replay</th>
         </thead>
         <tbody>
@@ -44,6 +45,7 @@
                 <td><span th:text="${#numbers.formatPercent(aSession.successRate, 1, 2)}">%70</span></td>
                 <td><span th:text="${#numbers.formatPercent(aSession.successRateNew, 1, 2)}">%55</span></td>
 <!--                <td><span th:text="${#numbers.formatDecimal(aSession.averageLength, 1, 2)}">20.1</span></td>-->
+                <td><span th:text="${aSession.forceCorrectCount}">3</span></td>
                 <td>
                     <a th:href="'/dictation/replay?language=' + ${language} + '&sessionId=' + ${aSession.sessionId} " th:text="${aSession.sessionId}"></a>
                 </td>

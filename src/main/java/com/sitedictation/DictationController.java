@@ -217,10 +217,23 @@ class DictationController {
                 return weakest;
             }
             // Random
-            // TODO prefer streaks < 4
+            // TODO prefer streaks < 4 (but maybe not relevant, as always some positions wrong, -1 or worse, etc.)
             return r4rPositions.get(random.nextInt(r4rPositions.size()));
         }
-        // remaining 50%
+        // try to convert streaks with +3 to +4, if any such reviewable positions; "moderately strong"
+        if (randomInt < 60) {
+            List<Position> plus3R4rPositions = r4rPositions.stream()
+                    .filter(p -> p.getStreak() == 3)
+                    .toList();
+            if (!plus3R4rPositions.isEmpty()) {
+                Position plus3R4rPosition = plus3R4rPositions.stream()
+                        .min(Comparator.comparingLong(Position::getReadyForReviewTimeMillis))
+                        .get();
+                log.info("Preferring a +3 position to review, {}", plus3R4rPosition.getFileName());
+                return plus3R4rPosition;
+            }
+        }
+        // remaining 40%
         // TODO consider grouping positions by (positive) streak
         // FIFO
         // TODO prefer streaks < 4

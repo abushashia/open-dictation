@@ -2,6 +2,8 @@ server.port: 8081
 
 spring.jackson.serialization.indent_output: true
 
+spring.output.ansi.enabled: always
+
 # TODO move from global to per-language settings; or allow for per-language overrides of these defaults
 dictation.fiat-percent: 25
 #dictation.plus-one-or-less-only: true
